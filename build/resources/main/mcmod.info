@@ -1,0 +1,16 @@
+[
+    {
+        "modid": "dtch",
+        "name": "DTChannels",
+        "version": "0.1",
+        "requiredMods": [
+            "spongeapi@5.2.0-SNAPSHOT"
+        ]
+    },
+    {
+        "modid": "dtchannels",
+        "name": "DTChannels",
+        "version": "0.1",
+        "description": "DT Channels"
+    }
+]

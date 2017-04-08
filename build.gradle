@@ -1,0 +1,23 @@
+plugins {
+    id 'org.spongepowered.plugin' version '0.8.1'
+}
+
+group = 'com.dragontechmc'
+version = '0.1'
+description = 'DT Channels'
+
+configurations {
+
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'sponge'
+        url = 'https://repo.spongepowered.org/maven'
+    }
+}
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:5.2.0-SNAPSHOT'
+}
