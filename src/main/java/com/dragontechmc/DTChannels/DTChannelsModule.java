@@ -9,10 +9,8 @@ public class DTChannelsModule implements Module {
 
 	
 	@Override
-	public void configure(Binder binder) {
-		
+	public void configure(Binder binder) {		
 		binder.bind(ChannelConfigs.class).in(Scopes.SINGLETON);
-		
 	}
 
 }
