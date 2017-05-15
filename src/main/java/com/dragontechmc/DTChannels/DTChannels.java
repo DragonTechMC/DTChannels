@@ -4,7 +4,6 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 
-import java.nio.file.Path;
 import com.dragontechmc.DTChannels.Commands.*;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -16,7 +15,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.api.config.DefaultConfig;
 
@@ -31,55 +30,50 @@ public class DTChannels {
 	
 	@Inject 
 	@DefaultConfig(sharedRoot = false)
-	private HoconConfigurationLoader defaultConfigLoader;
+	private ConfigurationLoader<CommentedConfigurationNode> defaultConfigLoader;
 	
-	@Inject
 	ChannelConfigs config;
 	
 	@Inject
 	private Injector injector;
 	
-	@Inject 
-	private StaffBroadcast staffBroadcast;
-	@Inject
-	private ModBroadcast modBroadcast;
-	@Inject
-	private AdminBroadcast adminBroadcast;
+	private Injector childInjector;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
     	this.logger.info("Starting DTChannels");
     	
-		
+    	// Create the child injector
+    	childInjector = injector.createChildInjector(new DTChannelsModule());
+    	
+        loadConfig();
+        
     	// Register Commands
-        CommandSpec StaffBroadcast = CommandSpec.builder()
+        CommandSpec staffBroadcast = CommandSpec.builder()
         	    .description(Text.of("Staff Broadcast"))
         	    .permission("dtchannels.staffbroadcast")
         	    .arguments(GenericArguments.remainingJoinedStrings(Text.of("message")))
-        	    .executor(staffBroadcast)
+        	    .executor(childInjector.getInstance(StaffBroadcast.class))
         	    .build();
     	
-        CommandSpec ModBroadcast = CommandSpec.builder()
+        CommandSpec modBroadcast = CommandSpec.builder()
         	    .description(Text.of("Mod Broadcast"))
         	    .permission("dtchannels.modbroadcast")
         	    .arguments(GenericArguments.remainingJoinedStrings(Text.of("message")))
-        	    .executor(modBroadcast)
+        	    .executor(childInjector.getInstance(ModBroadcast.class))
         	    .build();
         
-		CommandSpec AdminBroadcast = CommandSpec.builder()
+		CommandSpec adminBroadcast = CommandSpec.builder()
         	    .description(Text.of("Admin Broadcast")) 
         	    .permission("dtchannels.adminbroadcast") 
         	    .arguments(GenericArguments.remainingJoinedStrings(Text.of("message"))) 
-        	    .executor(adminBroadcast) 
+        	    .executor(childInjector.getInstance(AdminBroadcast.class)) 
 				.build(); 
         
         
-        Sponge.getCommandManager().register(this, StaffBroadcast, "staffbroadcast", "sb");
-        Sponge.getCommandManager().register(this, ModBroadcast, "modbroadcast", "mb");
-        Sponge.getCommandManager().register(this, AdminBroadcast, "adminbroadcast", "ab");
-    
-        
-        loadConfig();
+        Sponge.getCommandManager().register(this, staffBroadcast, "staffbroadcast", "sb");
+        Sponge.getCommandManager().register(this, modBroadcast, "modbroadcast", "mb");
+        Sponge.getCommandManager().register(this, adminBroadcast, "adminbroadcast", "ab");        
     }
     
     
@@ -87,8 +81,6 @@ public class DTChannels {
 
     	// Config 
     	try {
-
-    		Injector childInjector = injector.createChildInjector(new DTChannelsModule());
     		
 	    	CommentedConfigurationNode source = defaultConfigLoader.load();
 	    	

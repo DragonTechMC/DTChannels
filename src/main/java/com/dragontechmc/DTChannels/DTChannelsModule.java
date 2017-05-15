@@ -11,7 +11,7 @@ public class DTChannelsModule implements Module {
 	@Override
 	public void configure(Binder binder) {
 		
-		binder.bind(ChannelConfigs.class).to(ChannelConfigs.class).in(Scopes.SINGLETON);
+		binder.bind(ChannelConfigs.class).in(Scopes.SINGLETON);
 		
 	}
 
