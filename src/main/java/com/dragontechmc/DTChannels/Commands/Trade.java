@@ -12,32 +12,30 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.inject.Inject;
 
-
-public class ModBroadcast implements CommandExecutor {
+public class Trade implements CommandExecutor {
+	
 	
 	@Inject private Game game;
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		
-		Text prefix = Text.of(TextColors.GOLD, "[", TextColors.RED, "MB", TextColors.GOLD, "] ");
+		Text prefix = Text.of(TextColors.GOLD, "[Trade]");
 
 		String message = args.<String>getOne("message").get();
 		
 		Player player = (Player) src;
 		
-		Text fullMessage = Text.of(prefix, TextColors.RED, player.getName(), ": ",TextColors.GREEN, message);
+		Text fullMessage = Text.of(prefix, TextColors.RED, player.getName(), ": ",TextColors.DARK_GREEN, message);
 		
 		
         for (Player players : game.getServer().getOnlinePlayers()) {
-            if (players.hasPermission("dtchannels.modbroadcast")) {
+            if (players.hasPermission("dtchannels.trade")) {
                 players.sendMessage(fullMessage);
             }
             
         }
 		return CommandResult.success();
 	}
-	
-	
 
 }

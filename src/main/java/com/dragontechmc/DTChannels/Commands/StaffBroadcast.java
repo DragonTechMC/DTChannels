@@ -10,16 +10,22 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import com.dragontechmc.DTChannels.ChannelConfigs;
 import com.google.inject.Inject;
+import com.dragontechmc.DTChannels.*;
 
 public class StaffBroadcast implements CommandExecutor {
 	
 	@Inject private Game game;
 	
+	@Inject
+	ChannelConfigs config;
+	
+	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		
-		Text prefix = Text.of(TextColors.GOLD, "[", TextColors.RED, "SB", TextColors.GOLD, "] ");
+		Text prefix = Text.of(config.sbPrefix);
 
 		String message = args.<String>getOne("message").get();
 		
