@@ -14,7 +14,6 @@ public class DTChannelsPluginContainer {
 	
 	@Inject
 	public DTChannelsPluginContainer(Injector injector) {
-		// Create the child injector
     	childInjector = injector.createChildInjector(new DTChannelsModule());	
     }
 

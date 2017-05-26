@@ -9,23 +9,28 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
+import com.dragontechmc.DTChannels.ChannelConfigs;
 import com.google.inject.Inject;
 
 public class AdminBroadcast implements CommandExecutor {
 	
 	@Inject private Game game;
 	
+	@Inject
+	ChannelConfigs config;
+	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		
-		Text prefix = Text.of(TextColors.AQUA, "[", TextColors.RED, "AB", TextColors.AQUA, "] ");
+		Text prefix = Text.of(toText(config.abPrefix));
 
 		String message = args.<String>getOne("message").get();
 		
 		Player player = (Player) src;
 		
-		Text fullMessage = Text.of(prefix, TextColors.RED, player.getName(), ": ",TextColors.DARK_GREEN, message);
+		Text fullMessage = Text.of(prefix, " ", TextColors.RED, player.getName(), ": ",TextColors.DARK_GREEN, message);
 		
 		
         for (Player players : game.getServer().getOnlinePlayers()) {
@@ -36,7 +41,9 @@ public class AdminBroadcast implements CommandExecutor {
         }
 		return CommandResult.success();
 	}
-	
-	
+
+	public static Text toText(String str){
+    	return TextSerializers.FORMATTING_CODE.deserialize(str);
+	}	
 
 }
